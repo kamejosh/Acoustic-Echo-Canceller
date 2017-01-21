@@ -22,7 +22,7 @@ roomImpulseResponse = roomImpulseResponse/norm(roomImpulseResponse)*4;
 room = dsp.FIRFilter('Numerator', roomImpulseResponse');
 
 % creating the FDAF object
-echoCanceller    = dsp.FrequencyDomainAdaptiveFilter('Length', 10, ...
+echoCanceller    = dsp.FrequencyDomainAdaptiveFilter('Length', 1000, ...
     'StepSize', 0.025, ...
     'InitialPower', 0.01, ...
     'AveragingFactor', 0.98, ...
@@ -86,7 +86,7 @@ micSignal = farEcho + near;
 % calculating length of array
 miclength = length(micSignal);
 
-%% NLMS Algo for removing echo
+%% FDAF Algo for removing echo
 
 [y, e] = echoCanceller(far,micSignal);
 
@@ -118,13 +118,13 @@ plot(e);
 title('NLMS Out');
 
 %% Plotting erle
-Hd2 = dfilt.dffir(ones(1,1000));
+diffAverager = dsp.FIRFilter('Numerator', ones(1,1024));
+farEchoAverager = clone(diffAverager);
 
-erle = filter(Hd2, (e - near(1 : length(e))).^2)./ ...
-    (filter(Hd2, micSignal(1 : length(e)).^2));
+erle = diffAverager((e-near).^2)./ farEchoAverager(farEcho.^2);
+erledB = -10*log10(erle);
 
-erledB = 10*log10(erle);
-erledB = abs(erledB);
+% erledB = abs(erledB);
 figure(3);
 plot(erledB);
 xlabel('Samlpes]');

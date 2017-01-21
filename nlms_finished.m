@@ -142,15 +142,14 @@ plot(e);
 title('NLMS Out');
 
 %% Plotting erle
-Hd2 = dfilt.dffir(ones(1,1000));
-
 e = transpose(e);
 
-erle = filter(Hd2, (e - near(1 : length(e))).^2)./ ...
-    (filter(Hd2, micSignal(1 : length(e)).^2));
+diffAverager = dsp.FIRFilter('Numerator', ones(1,1024));
+farEchoAverager = clone(diffAverager);
 
-erledB = 10*log10(erle);
-erledB = abs(erledB);
+erle = diffAverager((e-near).^2)./ farEchoAverager(farEcho.^2);
+erledB = -10*log10(erle);
+
 figure(3);
 plot(erledB);
 xlabel('Samlpes]');
