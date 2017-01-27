@@ -88,7 +88,9 @@ miclength = length(micSignal);
 
 %% FDAF Algo for removing echo
 
+tic
 [y, e] = echoCanceller(far,micSignal);
+timeIntervall = toc;
 
 % playback of error signal (output)
 sound(e,8000);
@@ -131,6 +133,7 @@ xlabel('Samlpes]');
 ylabel('ERLE [dB]');
 title('Echo Return Loss Enhancement');
 set(gcf, 'Color', [1 1 1])
-avgErle = mean(erledB);
-disp(avgErle);
+% avgErle = mean(erledB);
+disp(timeIntervall);
+% disp(avgErle);
                 

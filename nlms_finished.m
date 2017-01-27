@@ -163,5 +163,5 @@ figure(4);
 plot(timeForEachIteration);
 title('Convergence Graph');
 avgIter = mean(timeForEachIteration);
-disp(avgIter);
+disp(sum(timeForEachIteration));
                 
